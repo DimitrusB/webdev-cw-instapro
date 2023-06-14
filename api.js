@@ -42,7 +42,7 @@ export function registerUser({ login, password, name, imageUrl }) {
 }
 
 export function addPost({ description , imageUrl}) {
-  return fetch(baseHost,{
+  return fetch(postsHost,{
     method: "POST",
     body: JSON.stringify({
       description,
