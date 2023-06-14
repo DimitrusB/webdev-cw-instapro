@@ -1,10 +1,13 @@
+
 import { renderHeaderComponent } from "./header-component.js";
+import { renderUploadImageComponent } from "./upload-image-component.js";
 
 
 export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
+
   const render = () => {
     // TODO: Реализовать страницу добавления поста
-    
+
     const appHtml = `
     <div class="page-container">
       <div class="header-container"></div>
@@ -12,14 +15,8 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
         <h3 class="form-title">Добавить пост</h3>
         <div class="form-inputs">
           <div class="upload-image-container">
-  <div class="upload=image">
-            <label class="file-upload-label secondary-button">
-                <input type="file" class="file-upload-input" style="display:none">
-                Выберите фото
-            </label>
-  </div>
-  </div>
-          <label>
+  <div class="upload"></div>
+
             Опишите фотографию:
             <textarea class="input textarea" rows="4" id="input textarea"></textarea>
             </label>
@@ -30,16 +27,26 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
 
     appEl.innerHTML = appHtml;
     const descriptText = document.getElementById('input textarea');
-    const postFoto = document.getElementsByClassName('file-upload-input');
-    console.log(postFoto);
+    // const fileInputElement = document.getElementById("image-input");
+    // const addPhoto = document.getElementById('addPhoto');
+    // const changePhoto = document.getElementById('changePhoto');
+    
+    // addPhoto.addEventListener("change", () =>{
+    //   uploadImage ({file: fileInputElement.files[0]});
+
+    //   render();
+    //   });
+
+
     renderHeaderComponent({
       element: document.querySelector(".header-container"),
     });
+    renderUploadImageComponent({element: document.querySelector(".upload")} );
 
     document.getElementById("add-button").addEventListener("click", () => {
       onAddPostClick({
         description: descriptText.value,
-        imageUrl: "https://image.png",
+        imageUrl: fileUrl,
       });
     });
   };

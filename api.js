@@ -41,6 +41,19 @@ export function registerUser({ login, password, name, imageUrl }) {
   });
 }
 
+export function addPost({ description , imageUrl}) {
+  return fetch(baseHost,{
+    method: "POST",
+    body: JSON.stringify({
+      description,
+      imageUrl,
+    }),
+  })
+  .then((response)=>{
+    return response.json();
+  });
+}
+
 export function loginUser({ login, password }) {
   return fetch(baseHost + "/api/user/login", {
     method: "POST",
