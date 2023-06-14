@@ -27,22 +27,15 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
 
     appEl.innerHTML = appHtml;
     const descriptText = document.getElementById('input textarea');
-    // const fileInputElement = document.getElementById("image-input");
-    // const addPhoto = document.getElementById('addPhoto');
-    // const changePhoto = document.getElementById('changePhoto');
     
-    // addPhoto.addEventListener("change", () =>{
-    //   uploadImage ({file: fileInputElement.files[0]});
-
-    //   render();
-    //   });
 
 
     renderHeaderComponent({
       element: document.querySelector(".header-container"),
     });
     renderUploadImageComponent({element: document.querySelector(".upload")} );
-
+    
+    
     document.getElementById("add-button").addEventListener("click", () => {
       onAddPostClick({
         description: descriptText.value,

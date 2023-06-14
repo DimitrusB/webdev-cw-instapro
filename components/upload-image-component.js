@@ -1,5 +1,6 @@
 import { uploadImage } from "../api.js";
 
+
 export function renderUploadImageComponent({ element, onImageUrlChange }) {
   let imageUrl = "";
 
@@ -39,7 +40,7 @@ export function renderUploadImageComponent({ element, onImageUrlChange }) {
         lableEl.textContent = "Загружаю файл...";
         uploadImage({ file }).then(({ fileUrl }) => {
         imageUrl = fileUrl;
-          // onImageUrlChange(imageUrl);
+        //  onImageUrlChange(imageUrl);
           render();
         });
       }
