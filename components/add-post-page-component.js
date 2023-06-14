@@ -1,6 +1,6 @@
 
 import { renderHeaderComponent } from "./header-component.js";
-import { renderUploadImageComponent } from "./upload-image-component.js";
+import imageUrl, { renderUploadImageComponent } from "./upload-image-component.js";
 
 
 export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
@@ -34,7 +34,7 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
       element: document.querySelector(".header-container"),
     });
     renderUploadImageComponent({element: document.querySelector(".upload")} );
-    
+    console.log(imageUrl);
     
     document.getElementById("add-button").addEventListener("click", () => {
       onAddPostClick({
