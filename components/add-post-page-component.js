@@ -1,10 +1,10 @@
 
 import { renderHeaderComponent } from "./header-component.js";
-import imageUrl, { renderUploadImageComponent } from "./upload-image-component.js";
+import { renderUploadImageComponent } from "./upload-image-component.js";
 
 
 export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
-
+  let imageUrl = "";
   const render = () => {
     // TODO: Реализовать страницу добавления поста
 
@@ -29,20 +29,24 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
     const descriptText = document.getElementById('input textarea');
     
 
-
     renderHeaderComponent({
       element: document.querySelector(".header-container"),
     });
-    renderUploadImageComponent({element: document.querySelector(".upload")} );
-    console.log(imageUrl);
-    
+
+    renderUploadImageComponent({element: document.querySelector(".upload"),
+    onImageUrlChange(newImageUrl) {
+     imageUrl = newImageUrl;
+    },
+  });
+
     document.getElementById("add-button").addEventListener("click", () => {
       onAddPostClick({
         description: descriptText.value,
-        imageUrl: "fileUrl",
+        imageUrl,
       });
     });
   };
 
   render();
+
 }
