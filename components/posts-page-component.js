@@ -3,7 +3,7 @@ import { renderHeaderComponent } from "./header-component.js";
 import { posts, goToPage, getToken, user } from "../index.js";
 import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale";
-import { addLike, disLike } from "../api.js";
+import { addLike, disLike, getPosts } from "../api.js";
 
 
 
@@ -58,28 +58,28 @@ export function renderPostsPageComponent({ appEl }) {
   }
 
 const token = getToken();
-console.log(user.name);
+
 
 
   for (let postEl of document.querySelectorAll(".like-button")) {
     postEl.addEventListener("click", () => {
       const postId = postEl.dataset.postId;
-        console.log(postEl);
-      if (!posts.isLiked) {
+        posts.forEach((post) => {
+          post.likes.forEach((like) => {
+      if (like.name != user.name) {
         addLike({
           token: token,
           id: postId,
         })
-        posts.isLiked =true;
       }
-        if (posts.isLiked){
+        if (like.name === user.name){
           disLike({
             token: token,
             id: postId,
         })
-        posts.isLiked =false;
       }
     });
-
+  });
+    })
   }
 }
