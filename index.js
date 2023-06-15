@@ -1,4 +1,4 @@
-import { addPost, getPosts } from "./api.js";
+import { addPost, getPosts, getPostsUser } from "./api.js";
 import { renderAddPostPageComponent } from "./components/add-post-page-component.js";
 import { renderAuthPageComponent } from "./components/auth-page-component.js";
 import {
@@ -8,6 +8,7 @@ import {
   POSTS_PAGE,
   USER_POSTS_PAGE,
 } from "./routes.js";
+import { renderHeaderComponent } from "./components/header-component.js";
 import { renderPostsPageComponent } from "./components/posts-page-component.js";
 import { renderLoadingPageComponent } from "./components/loading-page-component.js";
 import {
@@ -23,6 +24,7 @@ export let posts = [];
 const getToken = () => {
   const token = user ? `Bearer ${user.token}` : undefined;
   return token;
+
 };
 
 export const logout = () => {
@@ -58,6 +60,7 @@ export const goToPage = (newPage, data) => {
         .then((newPosts) => {
           page = POSTS_PAGE;
           posts = newPosts;
+
           renderApp();
         })
         .catch((error) => {
@@ -67,7 +70,9 @@ export const goToPage = (newPage, data) => {
     }
 
     if (newPage === USER_POSTS_PAGE) {
+
       // TODO: реализовать получение постов юзера из API
+      getPostsUser ({token: getToken() , id: data.userId})
       console.log("Открываю страницу пользователя: ", data.userId);
       page = USER_POSTS_PAGE;
       posts = [];
@@ -142,8 +147,11 @@ const renderApp = () => {
 
   if (page === USER_POSTS_PAGE) {
     // TODO: реализовать страницу фотографию пользвателя
-    appEl.innerHTML = "Здесь будет страница фотографий пользователя";
-    return;
+     console.log(posts);
+   return renderPostsPageComponent({
+      appEl,
+    });
+
   }
 };
 
