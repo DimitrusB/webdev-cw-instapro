@@ -1,8 +1,9 @@
 import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage } from "../index.js";
+import { posts, goToPage, getToken, user } from "../index.js";
 import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale";
+import { addLike, disLike } from "../api.js";
 
 
 
@@ -24,7 +25,7 @@ export function renderPostsPageComponent({ appEl }) {
           <img class="post-image" src="${post.imageUrl}">
         </div>
         <div class="post-likes">
-          <button data-post-id="642d00579b190443860c2f32" class="like-button">
+          <button data-post-id="${post.id}" class="like-button">
             <img src="./assets/images/like-active.svg">
           </button>
           <p class="post-likes-text">
@@ -54,5 +55,31 @@ export function renderPostsPageComponent({ appEl }) {
         userId: userEl.dataset.userId,
       });
     });
+  }
+
+const token = getToken();
+console.log(user.name);
+
+
+  for (let postEl of document.querySelectorAll(".like-button")) {
+    postEl.addEventListener("click", () => {
+      const postId = postEl.dataset.postId;
+        console.log(postEl);
+      if (!posts.isLiked) {
+        addLike({
+          token: token,
+          id: postId,
+        })
+        posts.isLiked =true;
+      }
+        if (posts.isLiked){
+          disLike({
+            token: token,
+            id: postId,
+        })
+        posts.isLiked =false;
+      }
+    });
+
   }
 }
