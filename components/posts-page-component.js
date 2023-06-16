@@ -1,4 +1,4 @@
-import { USER_POSTS_PAGE } from "../routes.js";
+import { POSTS_PAGE, USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
 import { posts, goToPage, getToken, user } from "../index.js";
 import { formatDistanceToNow } from "date-fns";
@@ -10,10 +10,12 @@ import { addLike, disLike, getPosts } from "../api.js";
 
 
 export function renderPostsPageComponent({ appEl }) {
+
   const appHtml = posts.map((post) =>{
 
      const timeToGo = formatDistanceToNow(new Date(post.createdAt),  {locale: ru});
-    return     `              <div class="page-container">
+    return     `    <button id="scrollButt" class="upbtn"></button>   
+    <div class="page-container">
     <div class="header-container"></div>
     <ul class="posts">
       <li class="post">
@@ -27,13 +29,10 @@ export function renderPostsPageComponent({ appEl }) {
         <div class="post-likes">
           <button data-post-id="${post.id}" class="like-button">
             <img src="./assets/images/like-active.svg">
-          </button>
-          <p class="post-likes-text">
+            <p class="post-likes-text">
             Нравится: <strong>${post.likes.length}</strong>
           </p>
-          <button id="buttDel">
-          Удалить
-        </button>
+          </button>
         </div>
         <p class="post-text">
           <span class="user-name">${post.user.name}</span>
@@ -47,6 +46,7 @@ export function renderPostsPageComponent({ appEl }) {
           </div>`;}).join('');
 
   appEl.innerHTML = appHtml;
+
 
   renderHeaderComponent({
     element: document.querySelector(".header-container"),
@@ -62,37 +62,34 @@ export function renderPostsPageComponent({ appEl }) {
 
 const token = getToken();
 
+function timout() {
+  setTimeout(() => {
+    goToPage(POSTS_PAGE);
+  }, 1000);
+};
+const btn = document.getElementById("scrollButt");
 
+document.body.appendChild(btn);
 
-//   for (let postEl of document.querySelectorAll(".like-button")) {
-//     postEl.addEventListener("click", () => {
-//       const postId = postEl.dataset.postId;
-//         posts.forEach((post) => {
-//           post.likes.forEach((like) => {
-//       if (like.name === user.name) {
-//         disLike({
-//           token: token,
-//           id: postId,
-//       })
-//         console.log("dislike!!!");
-//         return;
-//       }
-//     });
-//     addLike({
-//       token: token,
-//       id: postId,
-//     })
-//     console.log("like!!!");
+// Добавляем обработчик клика на кнопку "Наверх"
+btn.addEventListener("click", () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+// const btn = document.getElementById("scrollButt");
+
+// btn.addEventListener('click', () => {
+//   window.scrollTo({
+//     top: 0,
+//     behavior: 'smooth'
 //   });
-// })
-// }
+// });
+
 for (let postEl of document.querySelectorAll(".like-button")) {
   postEl.addEventListener("click", () => {
     const postId = postEl.dataset.postId;
     const post = posts.find(post => post.id === postId);
 
     if (!post) {
-      // Если пост не найден - выходим из функции
       return;
     }
 
@@ -104,12 +101,14 @@ for (let postEl of document.querySelectorAll(".like-button")) {
         id: postId,
       })
       console.log("dislike!!!");
+      timout();
     } else {
       addLike({
         token: token,
         id: postId,
       })
       console.log("like!!!");
+      timout();
     }
   })
 }
