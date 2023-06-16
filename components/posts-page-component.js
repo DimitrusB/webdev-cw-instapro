@@ -66,20 +66,22 @@ const token = getToken();
       const postId = postEl.dataset.postId;
         posts.forEach((post) => {
           post.likes.forEach((like) => {
-      if (like.name != user.name) {
-        addLike({
+      if (like.name === user.name) {
+        disLike({
           token: token,
           id: postId,
-        })
-      }
-        if (like.name === user.name){
-          disLike({
-            token: token,
-            id: postId,
-        })
+      })
+        console.log("dislike!!!");
+        return;
       }
     });
-  });
+    addLike({
+      token: token,
+      id: postId,
     })
-  }
+    console.log("like!!!");
+  });
+})
+}
+
 }
