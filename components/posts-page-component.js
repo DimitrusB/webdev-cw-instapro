@@ -31,6 +31,9 @@ export function renderPostsPageComponent({ appEl }) {
           <p class="post-likes-text">
             Нравится: <strong>${post.likes.length}</strong>
           </p>
+          <button id="buttDel">
+          Удалить
+        </button>
         </div>
         <p class="post-text">
           <span class="user-name">${post.user.name}</span>
@@ -61,27 +64,53 @@ const token = getToken();
 
 
 
-  for (let postEl of document.querySelectorAll(".like-button")) {
-    postEl.addEventListener("click", () => {
-      const postId = postEl.dataset.postId;
-        posts.forEach((post) => {
-          post.likes.forEach((like) => {
-      if (like.name === user.name) {
-        disLike({
-          token: token,
-          id: postId,
-      })
-        console.log("dislike!!!");
-        return;
-      }
-    });
-    addLike({
-      token: token,
-      id: postId,
-    })
-    console.log("like!!!");
-  });
-})
-}
+//   for (let postEl of document.querySelectorAll(".like-button")) {
+//     postEl.addEventListener("click", () => {
+//       const postId = postEl.dataset.postId;
+//         posts.forEach((post) => {
+//           post.likes.forEach((like) => {
+//       if (like.name === user.name) {
+//         disLike({
+//           token: token,
+//           id: postId,
+//       })
+//         console.log("dislike!!!");
+//         return;
+//       }
+//     });
+//     addLike({
+//       token: token,
+//       id: postId,
+//     })
+//     console.log("like!!!");
+//   });
+// })
+// }
+for (let postEl of document.querySelectorAll(".like-button")) {
+  postEl.addEventListener("click", () => {
+    const postId = postEl.dataset.postId;
+    const post = posts.find(post => post.id === postId);
 
+    if (!post) {
+      // Если пост не найден - выходим из функции
+      return;
+    }
+
+    const like = post.likes.find(like => like.name === user.name);
+
+    if (like) {
+      disLike({
+        token: token,
+        id: postId,
+      })
+      console.log("dislike!!!");
+    } else {
+      addLike({
+        token: token,
+        id: postId,
+      })
+      console.log("like!!!");
+    }
+  })
+}
 }
