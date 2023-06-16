@@ -71,18 +71,10 @@ const btn = document.getElementById("scrollButt");
 
 document.body.appendChild(btn);
 
-// Добавляем обработчик клика на кнопку "Наверх"
 btn.addEventListener("click", () => {
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
-// const btn = document.getElementById("scrollButt");
 
-// btn.addEventListener('click', () => {
-//   window.scrollTo({
-//     top: 0,
-//     behavior: 'smooth'
-//   });
-// });
 
 for (let postEl of document.querySelectorAll(".like-button")) {
   postEl.addEventListener("click", () => {
