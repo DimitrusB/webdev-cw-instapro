@@ -93,7 +93,11 @@ export function renderAuthPageComponent({ appEl, setUser }) {
         }
 
         loginUser({
-          login: login,
+          login: login
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;"),
           password: password,
         })
           .then((user) => {
