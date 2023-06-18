@@ -59,18 +59,10 @@ export function renderPostsPageComponent({ appEl }) {
       });
     });
   }
-
-
   
 const token = getToken();
 
-function timout() {
-  setTimeout(() => {
-    goToPage(POSTS_PAGE);
-  }, 1000);
-};
 const btn = document.getElementById("scrollButt");
-
 
 document.body.appendChild(btn);
 

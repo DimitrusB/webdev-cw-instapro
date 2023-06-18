@@ -137,10 +137,11 @@ const renderApp = () => {
         .then((response) => {
             return response.json();
         })
-        .then((responseData) => {
-
+        .catch((error) => {
+          console.error("Ошибка при добавлении поста:", error);
         });
         console.log("Добавляю пост...", { description, imageUrl });
+        renderPostsPageComponent({ appEl, filter: "all"});
         goToPage(POSTS_PAGE);
       },
     });
