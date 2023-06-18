@@ -30,7 +30,7 @@ export function renderPostsPageComponent({ appEl }) {
           <button data-post-id="${post.id}" class="like-button">
             <img src="./assets/images/like-active.svg">
             <p class="post-likes-text">
-            Нравится: <strong>${post.likes.length}</strong>
+            Нравится: <strong class="like-count">${post.likes.length}</strong>
           </p>
           </button>
         </div>
@@ -60,6 +60,8 @@ export function renderPostsPageComponent({ appEl }) {
     });
   }
 
+
+  
 const token = getToken();
 
 function timout() {
@@ -69,23 +71,36 @@ function timout() {
 };
 const btn = document.getElementById("scrollButt");
 
+
 document.body.appendChild(btn);
 
 btn.addEventListener("click", () => {
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
+function updateLikeCount(postEl, post) {
+  const likeCountEl = postEl.querySelector(".like-count");
+  likeCountEl.textContent = `${post.likes.length}`;
+}
+const isAuthenticated = Boolean(token && user.name);
 
 for (let postEl of document.querySelectorAll(".like-button")) {
   postEl.addEventListener("click", () => {
+
     const postId = postEl.dataset.postId;
     const post = posts.find(post => post.id === postId);
+
+    if (!isAuthenticated) {
+      postEl.classList.add("disabled");
+      alert("Авторизуйтесь, для возможности ставить лайки");
+      return;
+    }
 
     if (!post) {
       return;
     }
-
     const like = post.likes.find(like => like.name === user.name);
+
 
     if (like) {
       disLike({
@@ -93,14 +108,18 @@ for (let postEl of document.querySelectorAll(".like-button")) {
         id: postId,
       })
       console.log("dislike!!!");
-      timout();
+      post.likes = post.likes.filter(like => like.name !== user.name);
+      updateLikeCount(postEl, post);
     } else {
       addLike({
         token: token,
         id: postId,
       })
       console.log("like!!!");
-      timout();
+      post.likes.push({
+        name: user.name,
+      });
+      updateLikeCount(postEl, post);
     }
   })
 }
