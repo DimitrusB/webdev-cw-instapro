@@ -220,3 +220,8 @@
 .upbtn:hover {
   transform: scale(1)!important;
 }
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+

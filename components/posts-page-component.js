@@ -1,13 +1,9 @@
-import { POSTS_PAGE, USER_POSTS_PAGE } from "../routes.js";
+import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
 import { posts, goToPage, getToken, user } from "../index.js";
 import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale";
-import { addLike, disLike, getPosts } from "../api.js";
-
-
-
-
+import { addLike, disLike} from "../api.js";
 
 export function renderPostsPageComponent({ appEl }) {
 
@@ -30,7 +26,7 @@ export function renderPostsPageComponent({ appEl }) {
           <button data-post-id="${post.id}" class="like-button">
             <img src="./assets/images/like-active.svg">
             <p class="post-likes-text">
-            Нравится: <strong>${post.likes.length}</strong>
+            Нравится: <strong class="like-count">${post.likes.length}</strong>
           </p>
           </button>
         </div>
@@ -47,7 +43,6 @@ export function renderPostsPageComponent({ appEl }) {
 
   appEl.innerHTML = appHtml;
 
-
   renderHeaderComponent({
     element: document.querySelector(".header-container"),
   });
@@ -59,14 +54,9 @@ export function renderPostsPageComponent({ appEl }) {
       });
     });
   }
-
+  
 const token = getToken();
 
-function timout() {
-  setTimeout(() => {
-    goToPage(POSTS_PAGE);
-  }, 1000);
-};
 const btn = document.getElementById("scrollButt");
 
 document.body.appendChild(btn);
@@ -75,33 +65,62 @@ btn.addEventListener("click", () => {
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
+function updateLikeCount(postEl, post) {
+  const likeCountEl = postEl.querySelector(".like-count");
+  likeCountEl.textContent = `${post.likes.length}`;
+}
 
 for (let postEl of document.querySelectorAll(".like-button")) {
+  const postId = postEl.dataset.postId;
+  const post = posts.find(post => post.id === postId);
+  const isAuthenticated = Boolean(token && user.name);
+
+  if (!isAuthenticated) {
+    postEl.classList.add("disabled");
+  } else {
+    const isLikedByUser = post.likes.some(like => like.name === user.name);
+    const likeIcon = postEl.querySelector("img");
+    if (isLikedByUser) {
+      likeIcon.setAttribute("src", "./assets/images/like-active.svg");
+    } else {
+      likeIcon.setAttribute("src", "./assets/images/like-not-active.svg");
+    }
+  }
+
   postEl.addEventListener("click", () => {
+    if (!isAuthenticated) {
+      alert("Авторизуйтесь, чтобы ставить лайки");
+      return;
+    }
+
     const postId = postEl.dataset.postId;
     const post = posts.find(post => post.id === postId);
-
     if (!post) {
       return;
     }
 
-    const like = post.likes.find(like => like.name === user.name);
+    const isLikedByUser = post.likes.some(like => like.name === user.name);
+    const likeIcon = postEl.querySelector("img");
 
-    if (like) {
+    if (isLikedByUser) {
       disLike({
         token: token,
         id: postId,
-      })
-      console.log("dislike!!!");
-      timout();
+      });
+      post.likes = post.likes.filter(like => like.name !== user.name);
+      likeIcon.setAttribute("src", "./assets/images/like-not-active.svg");
     } else {
       addLike({
         token: token,
         id: postId,
-      })
-      console.log("like!!!");
-      timout();
+      });
+      post.likes.push({
+        name: user.name,
+      });
+      likeIcon.setAttribute("src", "./assets/images/like-active.svg");
     }
-  })
+
+    updateLikeCount(postEl, post);
+  });
 }
 }
