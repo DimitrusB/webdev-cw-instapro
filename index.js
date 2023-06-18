@@ -124,7 +124,7 @@ const renderApp = () => {
       onAddPostClick({ description, imageUrl }) {
         const token = getToken();
         // TODO: реализовать добавление поста в API
-        fetch ("https://wedev-api.sky.pro/api/v1/prod/instapro", {
+        fetch ("https://wedev-api.sky.pro/api/v1/BorisevichDA/instapro", {
           method: "POST",
           body: JSON.stringify({
             description: description,
