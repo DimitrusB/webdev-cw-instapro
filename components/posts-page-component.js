@@ -74,19 +74,25 @@ function updateLikeCount(postEl, post) {
   const likeCountEl = postEl.querySelector(".like-count");
   likeCountEl.textContent = `${post.likes.length}`;
 }
-const isAuthenticated = Boolean(token && user.name);
+
 
 for (let postEl of document.querySelectorAll(".like-button")) {
+  const isAuthenticated = Boolean(token && user.name);
+
+  if (!isAuthenticated) {
+    postEl.classList.add("disabled");
+  }
+
   postEl.addEventListener("click", () => {
-
-    const postId = postEl.dataset.postId;
-    const post = posts.find(post => post.id === postId);
-
     if (!isAuthenticated) {
-      postEl.classList.add("disabled");
       alert("Авторизуйтесь, для возможности ставить лайки");
       return;
     }
+    
+    const postId = postEl.dataset.postId;
+    const post = posts.find(post => post.id === postId);
+
+
 
     if (!post) {
       return;
