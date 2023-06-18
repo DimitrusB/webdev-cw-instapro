@@ -1,13 +1,9 @@
-import { POSTS_PAGE, USER_POSTS_PAGE } from "../routes.js";
+import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
 import { posts, goToPage, getToken, user } from "../index.js";
 import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale";
-import { addLike, disLike, getPosts } from "../api.js";
-
-
-
-
+import { addLike, disLike} from "../api.js";
 
 export function renderPostsPageComponent({ appEl }) {
 
@@ -47,7 +43,6 @@ export function renderPostsPageComponent({ appEl }) {
 
   appEl.innerHTML = appHtml;
 
-
   renderHeaderComponent({
     element: document.querySelector(".header-container"),
   });
@@ -75,50 +70,57 @@ function updateLikeCount(postEl, post) {
   likeCountEl.textContent = `${post.likes.length}`;
 }
 
-
 for (let postEl of document.querySelectorAll(".like-button")) {
+  const postId = postEl.dataset.postId;
+  const post = posts.find(post => post.id === postId);
   const isAuthenticated = Boolean(token && user.name);
 
   if (!isAuthenticated) {
     postEl.classList.add("disabled");
+  } else {
+    const isLikedByUser = post.likes.some(like => like.name === user.name);
+    const likeIcon = postEl.querySelector("img");
+    if (isLikedByUser) {
+      likeIcon.setAttribute("src", "./assets/images/like-active.svg");
+    } else {
+      likeIcon.setAttribute("src", "./assets/images/like-not-active.svg");
+    }
   }
 
   postEl.addEventListener("click", () => {
     if (!isAuthenticated) {
-      alert("Авторизуйтесь, для возможности ставить лайки");
+      alert("Авторизуйтесь, чтобы ставить лайки");
       return;
     }
-    
+
     const postId = postEl.dataset.postId;
     const post = posts.find(post => post.id === postId);
-
-
-
     if (!post) {
       return;
     }
-    const like = post.likes.find(like => like.name === user.name);
 
+    const isLikedByUser = post.likes.some(like => like.name === user.name);
+    const likeIcon = postEl.querySelector("img");
 
-    if (like) {
+    if (isLikedByUser) {
       disLike({
         token: token,
         id: postId,
-      })
-      console.log("dislike!!!");
+      });
       post.likes = post.likes.filter(like => like.name !== user.name);
-      updateLikeCount(postEl, post);
+      likeIcon.setAttribute("src", "./assets/images/like-not-active.svg");
     } else {
       addLike({
         token: token,
         id: postId,
-      })
-      console.log("like!!!");
+      });
       post.likes.push({
         name: user.name,
       });
-      updateLikeCount(postEl, post);
+      likeIcon.setAttribute("src", "./assets/images/like-active.svg");
     }
-  })
+
+    updateLikeCount(postEl, post);
+  });
 }
 }
