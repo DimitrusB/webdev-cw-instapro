@@ -98,15 +98,24 @@ export function registerUser({ login, password, name, imageUrl }) {
   });
 }
 
-export function addPost({ description , imageUrl}) {
+export function addPost({ description , imageUrl, token}) {
   return fetch(postsHost,{
     method: "POST",
     body: JSON.stringify({
       description,
       imageUrl,
     }),
+    headers: {
+          Authorization: token,
+        },
   })
   .then((response)=>{
+    if (response.status === 400) {
+      throw new Error("Неверный логин или пароль");
+    }
+    if (response.status === 500) {
+      throw new Error("Ошибка сервера");
+    }
     return response.json();
   });
 }

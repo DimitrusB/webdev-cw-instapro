@@ -122,27 +122,16 @@ const renderApp = () => {
     return renderAddPostPageComponent({
       appEl,
       onAddPostClick({ description, imageUrl }) {
-        const token = getToken();
-        // TODO: реализовать добавление поста в API
-        fetch ("https://wedev-api.sky.pro/api/v1/BorisevichDA/instapro", {
-          method: "POST",
-          body: JSON.stringify({
-            description: description,
-            imageUrl: imageUrl,
-          }),
-          headers: {
-            Authorization: token,
-          },
-        })
-        .then((response) => {
-            return response.json();
+        goToPage(LOADING_PAGE);
+        addPost({description, imageUrl, token: getToken()})
+        .then(()=>{
+          goToPage(POSTS_PAGE);
         })
         .catch((error) => {
+          goToPage(ADD_POSTS_PAGE);
           console.error("Ошибка при добавлении поста:", error);
+          alert(error.message);
         });
-        console.log("Добавляю пост...", { description, imageUrl });
-        renderPostsPageComponent({ appEl, filter: "all"});
-        goToPage(POSTS_PAGE);
       },
     });
   }
