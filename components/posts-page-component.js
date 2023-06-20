@@ -65,6 +65,16 @@ btn.addEventListener("click", () => {
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
+btn.style.display = "none";
+
+window.addEventListener("scroll", () => {
+  if (window.scrollY > 100) {
+    btn.style.display = "block";
+  } else {
+    btn.style.display = "none";
+  }
+});
+
 function updateLikeCount(postEl, post) {
   const likeCountEl = postEl.querySelector(".like-count");
   likeCountEl.textContent = `${post.likes.length}`;
